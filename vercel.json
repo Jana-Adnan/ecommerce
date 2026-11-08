@@ -1,30 +1,12 @@
 {
+  "version": 2,
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
+    { "source": "/", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/api" }
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "dist/ecommerce/**"
     }
-  ]
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
