@@ -1,0 +1,325 @@
+<div class="min-h-screen bg-white font-sans transition-colors duration-200">
+
+  <section class="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-emerald-500 to-green-600 text-white py-10 sm:py-12">
+    <!-- Decorative Ambient Glows -->
+    <div class="absolute -right-16 -bottom-16 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute right-1/3 top-0 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <!-- Breadcrumb Navigation -->
+      <nav class="flex items-center gap-2 text-xs sm:text-sm text-emerald-100/90 mb-5 font-normal" aria-label="Breadcrumb">
+        <a routerLink="/home" class="hover:text-white transition-colors">Home</a>
+        <span class="text-emerald-200/60">/</span>
+        <span class="text-white font-medium">My Account</span>
+      </nav>
+
+      <!-- Header Icon & Titles -->
+      <div class="flex items-center gap-4 sm:gap-5">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-2xl sm:text-3xl shadow-inner border border-white/20 shrink-0">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            My Account
+          </h1>
+          <p class="text-xs sm:text-sm text-emerald-50/90 mt-1 font-normal">
+            Manage your addresses and account settings
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Body -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Column: Sidebar Navigation (My Account) -->
+      <aside class="lg:col-span-3 space-y-4">
+        <div class="bg-white rounded-2xl border border-gray-100 p-4 shadow-2xs">
+          <h3 class="text-sm font-bold text-gray-900 px-2 mb-3">
+            My Account
+          </h3>
+          <nav class="space-y-1.5">
+            <!-- My Addresses Link -->
+            <a
+              routerLink="/addresses"
+              class="flex items-center justify-between p-3 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors group cursor-pointer"
+            >
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 group-hover:text-emerald-600 group-hover:bg-emerald-50 transition-colors">
+                  <i class="fa-solid fa-location-dot text-sm"></i>
+                </span>
+                <span class="text-sm font-medium">My Addresses</span>
+              </div>
+              <i class="fa-solid fa-chevron-right text-xs text-gray-400 group-hover:text-gray-600 transition-colors"></i>
+            </a>
+
+            <!-- Settings Link (Active) -->
+            <a
+              routerLink="/settings"
+              class="flex items-center justify-between p-3 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-600 font-semibold shadow-2xs cursor-pointer"
+            >
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-xs">
+                  <i class="fa-solid fa-gear text-sm"></i>
+                </span>
+                <span class="text-sm font-semibold">Settings</span>
+              </div>
+              <i class="fa-solid fa-chevron-right text-xs text-emerald-600"></i>
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Right Column: Settings Main Box -->
+      <section class="lg:col-span-9">
+        <div class="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 p-6 sm:p-8 shadow-2xs">
+          <!-- Card Header -->
+          <div class="mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
+              Account Settings
+            </h2>
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">
+              Update your profile information and change your password
+            </p>
+          </div>
+
+          <!-- Section 1: Profile Information -->
+          <div class="pt-2">
+            <!-- Subsection Header -->
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-base shrink-0">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <h3 class="text-sm sm:text-base font-bold text-gray-900">
+                  Profile Information
+                </h3>
+                <p class="text-xs text-gray-500">
+                  Update your personal details
+                </p>
+              </div>
+            </div>
+
+            <!-- Profile Form -->
+            <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="space-y-4">
+              <div>
+                <label for="fullName" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
+                  Full Name
+                </label>
+                <input
+                  id="fullName"
+                  type="text"
+                  formControlName="name"
+                  placeholder="Enter your name"
+                  class="w-full px-4 py-2.5 text-sm text-gray-900 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder-gray-400 transition-all"
+                />
+                @if (profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
+                  <p class="text-xs text-rose-500 mt-1">
+                    @if (profileForm.get('name')?.errors?.['required']) { Name is required }
+                    @else if (profileForm.get('name')?.errors?.['minlength']) { Name must be at least 3 characters }
+                  </p>
+                }
+              </div>
+
+              <div>
+                <label for="email" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  formControlName="email"
+                  placeholder="Enter your email"
+                  class="w-full px-4 py-2.5 text-sm text-gray-900 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder-gray-400 transition-all"
+                />
+                @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+                  <p class="text-xs text-rose-500 mt-1">
+                    @if (profileForm.get('email')?.errors?.['required']) { Email address is required }
+                    @else if (profileForm.get('email')?.errors?.['email']) { Please enter a valid email address }
+                  </p>
+                }
+              </div>
+
+              <div>
+                <label for="phone" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
+                  Phone Number
+                </label>
+                <input
+                  id="phone"
+                  type="tel"
+                  formControlName="phone"
+                  placeholder="01xxxxxxxxx"
+                  class="w-full px-4 py-2.5 text-sm text-gray-900 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder-gray-400 transition-all"
+                />
+                @if (profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched) {
+                  <p class="text-xs text-rose-500 mt-1">
+                    @if (profileForm.get('phone')?.errors?.['required']) { Phone number is required }
+                    @else if (profileForm.get('phone')?.errors?.['pattern']) { Please enter a valid phone number (010, 011, 012, or 015 followed by 8 digits) }
+                  </p>
+                }
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  [disabled]="isUpdatingProfile() || profileForm.invalid"
+                  class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  @if (isUpdatingProfile()) {
+                    <i class="fa-solid fa-spinner fa-spin text-xs"></i>
+                    <span>Saving...</span>
+                  } @else {
+                    <i class="fa-solid fa-floppy-disk text-xs"></i>
+                    <span>Save Changes</span>
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Section 2: Account Information -->
+          <div class="border-t border-gray-100 mt-8 pt-6">
+            <h3 class="text-sm sm:text-base font-bold text-gray-900 mb-4">
+              Account Information
+            </h3>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between text-xs sm:text-sm">
+                <span class="text-gray-500 font-medium">User ID</span>
+                <span class="text-gray-800 font-mono text-xs">{{ userId() || '—' }}</span>
+              </div>
+              <div class="border-t border-gray-50 pt-3 flex items-center justify-between text-xs sm:text-sm">
+                <span class="text-gray-500 font-medium">Role</span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200/80 capitalize">
+                  {{ userRole() || 'User' }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Change Password -->
+          <div class="border-t border-gray-100 mt-8 pt-6">
+            <!-- Subsection Header -->
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-base shrink-0">
+                <i class="fa-solid fa-lock"></i>
+              </div>
+              <div>
+                <h3 class="text-sm sm:text-base font-bold text-gray-900">
+                  Change Password
+                </h3>
+                <p class="text-xs text-gray-500">
+                  Update your account password
+                </p>
+              </div>
+            </div>
+
+            <!-- Password Form -->
+            <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="space-y-4">
+              <div>
+                <label for="currentPassword" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
+                  Current Password
+                </label>
+                <div class="relative">
+                  <input
+                    id="currentPassword"
+                    [type]="showCurrentPassword() ? 'text' : 'password'"
+                    formControlName="currentPassword"
+                    placeholder="Enter your current password"
+                    class="w-full px-4 py-2.5 pr-11 text-sm text-gray-900 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder-gray-400 transition-all"
+                  />
+                  <button
+                    type="button"
+                    (click)="toggleCurrentPassword()"
+                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                    aria-label="Toggle current password visibility"
+                  >
+                    <i class="fa-regular" [class.fa-eye]="!showCurrentPassword()" [class.fa-eye-slash]="showCurrentPassword()"></i>
+                  </button>
+                </div>
+                @if (passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched) {
+                  <p class="text-xs text-rose-500 mt-1">Current password is required</p>
+                }
+              </div>
+
+              <div>
+                <label for="newPassword" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
+                  New Password
+                </label>
+                <div class="relative">
+                  <input
+                    id="newPassword"
+                    [type]="showNewPassword() ? 'text' : 'password'"
+                    formControlName="password"
+                    placeholder="Enter your new password"
+                    class="w-full px-4 py-2.5 pr-11 text-sm text-gray-900 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder-gray-400 transition-all"
+                  />
+                  <button
+                    type="button"
+                    (click)="toggleNewPassword()"
+                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                    aria-label="Toggle new password visibility"
+                  >
+                    <i class="fa-regular" [class.fa-eye]="!showNewPassword()" [class.fa-eye-slash]="showNewPassword()"></i>
+                  </button>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">Must be at least 6 characters</p>
+                @if (passwordForm.get('password')?.invalid && passwordForm.get('password')?.touched) {
+                  <p class="text-xs text-rose-500 mt-1">
+                    @if (passwordForm.get('password')?.errors?.['required']) { New password is required }
+                    @else if (passwordForm.get('password')?.errors?.['minlength']) { Password must be at least 6 characters }
+                  </p>
+                }
+              </div>
+
+              <div>
+                <label for="confirmPassword" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5">
+                  Confirm New Password
+                </label>
+                <div class="relative">
+                  <input
+                    id="confirmPassword"
+                    [type]="showConfirmPassword() ? 'text' : 'password'"
+                    formControlName="rePassword"
+                    placeholder="Confirm your new password"
+                    class="w-full px-4 py-2.5 pr-11 text-sm text-gray-900 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 placeholder-gray-400 transition-all"
+                  />
+                  <button
+                    type="button"
+                    (click)="toggleConfirmPassword()"
+                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                    aria-label="Toggle confirm password visibility"
+                  >
+                    <i class="fa-regular" [class.fa-eye]="!showConfirmPassword()" [class.fa-eye-slash]="showConfirmPassword()"></i>
+                  </button>
+                </div>
+                @if (passwordForm.get('rePassword')?.touched && (passwordForm.get('rePassword')?.invalid || passwordForm.errors?.['passwordMismatch'])) {
+                  <p class="text-xs text-rose-500 mt-1">
+                    @if (passwordForm.get('rePassword')?.errors?.['required']) { Please confirm your new password }
+                    @else if (passwordForm.errors?.['passwordMismatch']) { Passwords do not match }
+                  </p>
+                }
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  [disabled]="isChangingPassword() || passwordForm.invalid"
+                  class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-medium px-5 py-2.5 rounded-xl text-sm transition-all shadow-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  @if (isChangingPassword()) {
+                    <i class="fa-solid fa-spinner fa-spin text-xs"></i>
+                    <span>Updating...</span>
+                  } @else {
+                    <i class="fa-solid fa-lock text-xs"></i>
+                    <span>Change Password</span>
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>

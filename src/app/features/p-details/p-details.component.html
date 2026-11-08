@@ -1,0 +1,145 @@
+@if(p_details()._id){
+<section class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-gray-50/50">
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl border border-gray-100 shadow-sm p-4 sm:p-6 md:p-8 lg:p-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+
+            <div class="lg:col-span-5 flex flex-col gap-4">
+                <div
+                    class="w-full aspect-square bg-gray-50/40 rounded-2xl border border-gray-100 p-4 sm:p-6 flex items-center justify-center overflow-hidden group">
+                    <img [title]="p_details().slug" [src]="p_details().imageCover" [alt]="p_details().title"
+                        class="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105" />
+                </div>
+
+                <owl-carousel-o class="dotClass" [options]="customOptions">
+                    @for (pImg of p_details().images; track pImg) {
+                    <ng-template carouselSlide>
+                        <div class="w-full p-2">
+                            <img class="w-full object-cover border-2 border-gray-400 rounded-md" [src]="pImg"
+                                [alt]="p_details().title" [title]="p_details().slug">
+                        </div>
+                    </ng-template>
+                    }
+                </owl-carousel-o>
+            </div>
+
+            <div class="lg:col-span-7 flex flex-col">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                        {{p_details().category.name}}
+                    </span>
+
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+                        {{p_details().brand.name}}
+                    </span>
+                </div>
+
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+                    {{p_details().title}}
+                </h1>
+
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="flex items-center text-amber-400 text-sm gap-0.5">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-regular fa-star"></i>
+                    </div>
+
+                    <span class="text-sm font-medium text-gray-500">
+                        {{p_details().ratingsAverage}}
+                    </span>
+                </div>
+
+                <div class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-3">
+                    {{p_details().price | currency:'GBP'}}
+                </div>
+
+                <div class="mb-5">
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        {{p_details().quantity}} In Stock
+                    </span>
+                </div>
+
+                <p class="text-sm sm:text-base text-gray-600 leading-relaxed mb-6">
+                    {{p_details().description}}
+                </p>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="inline-flex items-center border border-gray-300 rounded-xl bg-white shadow-xs overflow-hidden">
+                            <button type="button" (click)="decreaseQuantity()" [disabled]="quantity() <= 1"
+                                class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                <i class="fa-solid fa-minus text-xs"></i>
+                            </button>
+
+                            <span
+                                class="w-12 h-10 flex items-center justify-center text-sm sm:text-base font-semibold text-gray-900 select-none">
+                                {{quantity()}}
+                            </span>
+
+                            <button type="button" (click)="increaseQuantity()"
+                                [disabled]="quantity() >= p_details().quantity"
+                                class="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                        </div>
+
+                        <span class="text-sm text-gray-500 font-medium">
+                            {{p_details().quantity}} available
+                        </span>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-gray-50/90 border border-gray-100 rounded-2xl p-4 sm:p-5 flex items-center justify-between mb-6 shadow-xs">
+                    <span class="text-sm sm:text-base font-medium text-gray-700">Total Price:</span>
+
+                    <span class="text-xl sm:text-2xl font-bold text-emerald-600 tracking-tight">
+                        {{totalPrice() | currency:'GBP'}}
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 mb-3">
+                    <button type="button" (click)="AddToCart()"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-medium py-3.5 px-6 rounded-xl flex items-center justify-center gap-2.5 shadow-sm transition-all cursor-pointer">
+                        <i class="fa-solid fa-cart-shopping text-sm"></i>
+                        <span>Add to Cart</span>
+                    </button>
+
+                    @if(cartMessage()) {
+                    <p class="text-sm text-center text-emerald-600">
+                        {{cartMessage()}}
+                    </p>
+                    }
+                </div>
+                <div class="flex items-center gap-3">
+                    <button type="button" (click)="AddToWishlist()"
+                        class="flex-1 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm transition-all shadow-xs cursor-pointer">
+                        <i class="fa-regular fa-heart text-gray-500 text-sm"></i>
+                        <span>Add to Wishlist</span>
+                    </button>
+
+                    <button type="button" aria-label="Share product"
+                        class="w-11 h-11 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600 hover:text-gray-900 rounded-xl flex items-center justify-center transition-all shadow-xs cursor-pointer">
+                        <i class="fa-solid fa-share-nodes text-sm"></i>
+                    </button>
+                </div>
+
+                @if(wishlistMessage()) {
+                <p class="text-sm text-center text-emerald-600 mt-2">
+                    {{wishlistMessage()}}
+                </p>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+}

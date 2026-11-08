@@ -1,0 +1,345 @@
+<section
+  class="min-h-[calc(100vh-140px)] bg-white py-6 sm:py-10 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-200"
+>
+  <div class="max-w-7xl mx-auto">
+    <!-- Breadcrumb Navigation -->
+    <nav
+      class="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-6"
+      aria-label="Breadcrumb"
+    >
+      <a
+        routerLink="/home"
+        class="hover:text-emerald-600 transition-colors"
+      >
+        Home
+      </a>
+      <span class="text-gray-400">/</span>
+      <span class="font-medium text-gray-900">Wishlist</span>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="flex items-center gap-4 mb-8">
+      <div
+        class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0 border border-rose-100 shadow-2xs"
+      >
+        <i class="fa-solid fa-heart text-xl sm:text-2xl"></i>
+      </div>
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+          My Wishlist
+        </h1>
+        <p class="text-xs sm:text-sm text-gray-500 mt-0.5">
+          {{ itemsCount() }} {{ itemsCount() === 1 ? 'item saved' : 'items saved' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Loading Skeleton State -->
+    @if (isLoading()) {
+      <div
+        class="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-2xs overflow-hidden p-6 space-y-4"
+      >
+        @for (item of [1, 2, 3, 4]; track item) {
+          <div class="animate-pulse flex items-center justify-between gap-4 py-3">
+            <div class="flex items-center gap-4 flex-1">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-200 rounded-2xl shrink-0"></div>
+              <div class="space-y-2 flex-1 max-w-md">
+                <div class="h-4 bg-gray-200 rounded-md w-3/4"></div>
+                <div class="h-3 bg-gray-100 rounded-md w-1/3"></div>
+              </div>
+            </div>
+            <div class="h-4 bg-gray-200 rounded-md w-20 hidden sm:block"></div>
+            <div class="h-6 bg-gray-200 rounded-full w-20 hidden sm:block"></div>
+            <div class="h-10 bg-gray-200 rounded-xl w-32"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Active Wishlist with Items -->
+    @else if (itemsCount() > 0) {
+      <div
+        class="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-2xs overflow-hidden"
+      >
+        <!-- Desktop / Tablet Table View (md+) -->
+        <div class="hidden md:block overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-gray-100 text-xs sm:text-sm text-gray-400 font-medium">
+                <th scope="col" class="py-4 px-6 font-normal w-[46%]">Product</th>
+                <th scope="col" class="py-4 px-6 font-normal w-[18%]">Price</th>
+                <th scope="col" class="py-4 px-6 font-normal w-[16%]">Status</th>
+                <th scope="col" class="py-4 px-6 font-normal w-[20%] text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              @for (product of wishlistProducts(); track product._id || product.id) {
+                <tr class="hover:bg-white transition-colors">
+                  <!-- Product Column -->
+                  <td class="py-5 px-6">
+                    <div class="flex items-center gap-4">
+                      <!-- Product Image Thumbnail -->
+                      <a
+                        [routerLink]="['/p-details', product._id || product.id]"
+                        class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50/80 rounded-2xl border border-gray-100 p-2 shrink-0 flex items-center justify-center overflow-hidden group cursor-pointer"
+                      >
+                        <img
+                          [src]="product.imageCover"
+                          [alt]="product.title"
+                          class="w-full h-full object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </a>
+
+                      <!-- Product Info -->
+                      <div class="min-w-0 max-w-md">
+                        <a
+                          [routerLink]="['/p-details', product._id || product.id]"
+                          class="text-sm sm:text-base font-bold text-gray-900 hover:text-emerald-600 transition-colors line-clamp-2 cursor-pointer"
+                          [title]="product.title"
+                        >
+                          {{ product.title }}
+                        </a>
+                        <p class="text-xs text-gray-400 mt-1 font-medium">
+                          {{ product.category?.name }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Price Column -->
+                  <td class="py-5 px-6 align-middle">
+                    <div class="flex flex-col">
+                      <span class="text-sm sm:text-base font-bold text-gray-900 whitespace-nowrap">
+                        {{ (product.priceAfterDiscount ? product.priceAfterDiscount : product.price) | number }} EGP
+                      </span>
+                      @if (product.priceAfterDiscount) {
+                        <span class="text-xs text-gray-400 line-through mt-0.5 whitespace-nowrap">
+                          {{ product.price | number }} EGP
+                        </span>
+                      } @else if (hasDiscount(product, $index)) {
+                        <span class="text-xs text-gray-400 line-through mt-0.5 whitespace-nowrap">
+                          {{ getOriginalPrice(product, $index) | number }} EGP
+                        </span>
+                      }
+                    </div>
+                  </td>
+
+                  <!-- Status Column -->
+                  <td class="py-5 px-6 align-middle">
+                    @if (product.quantity > 0) {
+                      <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap"
+                      >
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span>In Stock</span>
+                      </span>
+                    } @else {
+                      <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap"
+                      >
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                        <span>Out of Stock</span>
+                      </span>
+                    }
+                  </td>
+
+                  <!-- Actions Column -->
+                  <td class="py-5 px-6 align-middle">
+                    <div class="flex items-center gap-3">
+                      <!-- Add to Cart Button -->
+                      <button
+                        (click)="addToCart(product._id || product.id)"
+                        [disabled]="isAddingToCart() === (product._id || product.id) || product.quantity === 0"
+                        type="button"
+                        class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium text-xs sm:text-sm px-4 py-2 sm:py-2.5 rounded-xl transition-all shadow-2xs cursor-pointer whitespace-nowrap"
+                      >
+                        @if (isAddingToCart() === (product._id || product.id)) {
+                          <i class="fa-solid fa-spinner fa-spin text-xs"></i>
+                        } @else {
+                          <i class="fa-solid fa-cart-shopping text-xs sm:text-sm"></i>
+                        }
+                        <span>Add to Cart</span>
+                      </button>
+
+                      <!-- Remove from Wishlist Button -->
+                      <button
+                        (click)="removeFromWishlist(product._id || product.id)"
+                        [disabled]="isRemoving() === (product._id || product.id)"
+                        type="button"
+                        aria-label="Remove from wishlist"
+                        class="w-9 h-9 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-all cursor-pointer"
+                        title="Remove from wishlist"
+                      >
+                        @if (isRemoving() === (product._id || product.id)) {
+                          <i class="fa-solid fa-spinner fa-spin text-xs text-red-500"></i>
+                        } @else {
+                          <i class="fa-regular fa-trash-can text-sm sm:text-base"></i>
+                        }
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Card View (< md) -->
+        <div class="md:hidden divide-y divide-gray-100">
+          @for (product of wishlistProducts(); track product._id || product.id) {
+            <div class="p-4 sm:p-5 space-y-3.5">
+              <div class="flex items-start gap-3.5">
+                <!-- Product Thumbnail -->
+                <a
+                  [routerLink]="['/p-details', product._id || product.id]"
+                  class="w-20 h-20 bg-gray-50/80 rounded-2xl border border-gray-100 p-2 shrink-0 flex items-center justify-center overflow-hidden"
+                >
+                  <img
+                    [src]="product.imageCover"
+                    [alt]="product.title"
+                    class="w-full h-full object-contain mix-blend-multiply"
+                  />
+                </a>
+
+                <!-- Product Title, Category & Price -->
+                <div class="flex-1 min-w-0">
+                  <a
+                    [routerLink]="['/p-details', product._id || product.id]"
+                    class="text-sm font-bold text-gray-900 hover:text-emerald-600 transition-colors line-clamp-2"
+                  >
+                    {{ product.title }}
+                  </a>
+                  <p class="text-xs text-gray-400 mt-0.5">
+                    {{ product.category?.name }}
+                  </p>
+
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <span class="text-sm sm:text-base font-bold text-gray-900">
+                      {{ (product.priceAfterDiscount ? product.priceAfterDiscount : product.price) | number }} EGP
+                    </span>
+                    @if (product.priceAfterDiscount) {
+                      <span class="text-xs text-gray-400 line-through">
+                        {{ product.price | number }} EGP
+                      </span>
+                    } @else if (hasDiscount(product, $index)) {
+                      <span class="text-xs text-gray-400 line-through">
+                        {{ getOriginalPrice(product, $index) | number }} EGP
+                      </span>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status & Actions Bottom Bar -->
+              <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+                <div>
+                  @if (product.quantity > 0) {
+                    <span
+                      class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200"
+                    >
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      <span>In Stock</span>
+                    </span>
+                  } @else {
+                    <span
+                      class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200"
+                    >
+                      <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                      <span>Out of Stock</span>
+                    </span>
+                  }
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    (click)="addToCart(product._id || product.id)"
+                    [disabled]="isAddingToCart() === (product._id || product.id) || product.quantity === 0"
+                    type="button"
+                    class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 disabled:opacity-60 text-white font-medium text-xs px-3.5 py-2 rounded-xl transition-all shadow-2xs cursor-pointer"
+                  >
+                    @if (isAddingToCart() === (product._id || product.id)) {
+                      <i class="fa-solid fa-spinner fa-spin text-xs"></i>
+                    } @else {
+                      <i class="fa-solid fa-cart-shopping text-xs"></i>
+                    }
+                    <span>Add to Cart</span>
+                  </button>
+
+                  <button
+                    (click)="removeFromWishlist(product._id || product.id)"
+                    [disabled]="isRemoving() === (product._id || product.id)"
+                    type="button"
+                    aria-label="Remove item"
+                    class="w-8 h-8 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 flex items-center justify-center transition-all cursor-pointer"
+                  >
+                    @if (isRemoving() === (product._id || product.id)) {
+                      <i class="fa-solid fa-spinner fa-spin text-xs text-red-500"></i>
+                    } @else {
+                      <i class="fa-regular fa-trash-can text-sm"></i>
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Continue Shopping Footer Link -->
+      <div class="mt-6">
+        <a
+          routerLink="/shop"
+          class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-600 hover:text-emerald-600 transition-colors"
+        >
+          <i class="fa-solid fa-arrow-left text-xs"></i>
+          <span>Continue Shopping</span>
+        </a>
+      </div>
+    }
+
+    <!-- Empty Wishlist State -->
+    @else {
+      <div class="py-10 sm:py-16">
+        <div
+          class="max-w-md mx-auto bg-white rounded-3xl border border-gray-100 p-8 sm:p-12 text-center shadow-2xs"
+        >
+          <!-- Empty Heart Icon with Subtle Pulse -->
+          <div class="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full bg-rose-50 animate-ping opacity-25"></div>
+            <div
+              class="w-20 h-20 rounded-full bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 shadow-inner"
+            >
+              <i class="fa-solid fa-heart text-3xl"></i>
+            </div>
+          </div>
+
+          <!-- Heading & Message -->
+          <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">
+            Your Wishlist is Empty
+          </h2>
+          <p class="text-gray-500 text-xs sm:text-sm mt-2 leading-relaxed">
+            Explore our wide variety of products and tap the heart icon to save your favorites here!
+          </p>
+
+          <!-- Call to Action -->
+          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              routerLink="/shop"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-semibold px-6 py-3 rounded-full shadow-sm hover:shadow transition-all text-xs sm:text-sm cursor-pointer"
+            >
+              <i class="fa-solid fa-bag-shopping text-sm"></i>
+              <span>Start Shopping</span>
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+            <a
+              routerLink="/home"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium px-5 py-3 rounded-full border border-gray-200 transition-all text-xs sm:text-sm cursor-pointer"
+            >
+              <span>Explore Home</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>

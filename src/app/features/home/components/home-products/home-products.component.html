@@ -1,0 +1,133 @@
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Section Title -->
+  <div class="flex items-center gap-2.5 mb-6">
+    <span class="w-1.5 h-6 bg-emerald-600 rounded-full inline-block"></span>
+    <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+      Featured <span class="text-emerald-600">Products</span>
+    </h2>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 sm:gap-5">
+    @for(product of products(); track product._id; let idx = $index) {
+    <div
+      class="group relative bg-white border border-gray-100 hover:border-emerald-300 rounded-2xl p-3 sm:p-3.5 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+    >
+      <!-- Discount Badge (Top Left) -->
+      @if(hasDiscount(product, idx)) {
+      <span
+        class="absolute top-2.5 left-2.5 z-10 bg-red-500 text-white text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full shadow-2xs pointer-events-none"
+      >
+        -{{ getDiscountPercent(product, idx) }}%
+      </span>
+      }
+
+      <!-- Quick Action Icons (Top Right) -->
+      <div class="absolute top-2.5 right-2.5 z-20 flex flex-col gap-1.5">
+        <!-- Wishlist Button -->
+        <button
+          type="button"
+          aria-label="Add to Wishlist"
+          (click)="toggleWishlist(product._id, $event)"
+          class="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full border border-gray-100 shadow-2xs flex items-center justify-center text-gray-400 hover:text-red-500 hover:border-red-200 transition-all cursor-pointer"
+          [title]="isInWishlist(product._id) ? 'Remove from Wishlist' : 'Add to Wishlist'"
+        >
+          <i
+            [class]="isInWishlist(product._id) ? 'fa-solid fa-heart text-red-500 text-xs' : 'fa-regular fa-heart text-xs'"
+          ></i>
+        </button>
+
+        <!-- Compare Button -->
+        <button
+          type="button"
+          aria-label="Compare"
+          (click)="onCompare(product.title, $event)"
+          class="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full border border-gray-100 shadow-2xs flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:border-emerald-200 transition-all cursor-pointer"
+          title="Compare product"
+        >
+          <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+        </button>
+
+        <!-- Quick View Button -->
+        <button
+          type="button"
+          aria-label="Quick View"
+          [routerLink]="['/p-details', product._id]"
+          class="w-7 h-7 sm:w-8 sm:h-8 bg-white rounded-full border border-gray-100 shadow-2xs flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:border-emerald-200 transition-all cursor-pointer"
+          title="View product details"
+        >
+          <i class="fa-regular fa-eye text-[11px]"></i>
+        </button>
+      </div>
+
+      <!-- Main Clickable Product Body -->
+      <div [routerLink]="['/p-details', product._id]" class="cursor-pointer">
+        <!-- Product Image -->
+        <div class="w-full aspect-square flex items-center justify-center overflow-hidden mb-3 pt-2">
+          <img
+            [src]="product.imageCover"
+            [alt]="product.title"
+            [title]="product.slug"
+            loading="lazy"
+            class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+
+        <!-- Product Meta & Info -->
+        <div>
+          <span class="text-xs text-gray-400 font-medium block">
+            {{ product.category.name }}
+          </span>
+
+          <h3
+            class="text-xs sm:text-sm font-semibold text-gray-800 hover:text-emerald-600 transition-colors truncate mt-0.5"
+            [title]="product.title"
+          >
+            {{ product.title }}
+          </h3>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-1 mt-1">
+            <div class="flex items-center text-amber-400 text-xs gap-0.5">
+              @for(star of getStarsArray(product.ratingsAverage); track $index) {
+              <i class="fa-solid fa-star"></i>
+              }
+              @if(product.ratingsAverage % 1 !== 0) {
+              <i class="fa-solid fa-star-half-stroke"></i>
+              }
+            </div>
+            <span class="text-xs text-gray-500 font-medium ml-1">
+              {{ product.ratingsAverage }}
+              <span class="text-gray-400">({{ product.ratingsQuantity || 18 }})</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price & Add to Cart -->
+      <div class="flex items-center justify-between mt-3 pt-2 border-t border-gray-50">
+        <div class="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-1.5">
+          <span class="text-sm sm:text-base font-bold text-gray-900 leading-none">
+            {{ product.price }} EGP
+          </span>
+          @if(hasDiscount(product, idx)) {
+          <span class="text-[11px] text-gray-400 line-through leading-none">
+            {{ getOriginalPrice(product, idx) }} EGP
+          </span>
+          }
+        </div>
+
+        <button
+          (click)="addToPorudct(product._id, $event)"
+          type="button"
+          aria-label="Add to cart"
+          class="w-8 h-8 rounded-full bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center transition-all shadow-xs hover:shadow cursor-pointer shrink-0"
+          title="Add to cart"
+        >
+          <i class="fa-solid fa-plus text-xs"></i>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+</section>

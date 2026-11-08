@@ -1,0 +1,154 @@
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-10">
+  <div
+    class="bg-gradient-to-br from-emerald-50/70 via-white to-emerald-50/40 border border-emerald-100 rounded-3xl p-6 sm:p-10 shadow-xs relative overflow-hidden"
+  >
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      <!-- Left Column: Newsletter Subscription (lg:col-span-7) -->
+      <div class="lg:col-span-7 space-y-5">
+        <!-- Newsletter Badge -->
+        <div
+          class="inline-flex items-center gap-2 bg-emerald-100/70 text-emerald-800 px-3 py-1.5 rounded-xl shadow-2xs"
+        >
+          <div
+            class="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0"
+          >
+            <i class="fa-regular fa-envelope text-xs"></i>
+          </div>
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="font-extrabold tracking-wider uppercase text-emerald-700">NEWSLETTER</span>
+            <span class="text-gray-500 font-medium">• 50,000+ subscribers</span>
+          </div>
+        </div>
+
+        <!-- Heading & Description -->
+        <div>
+          <h2
+            class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight leading-snug"
+          >
+            Get the Freshest Updates <span class="text-emerald-600">Delivered Free</span>
+          </h2>
+          <p class="text-gray-600 text-sm sm:text-base mt-2 font-normal max-w-xl">
+            Weekly recipes, seasonal offers & exclusive member perks.
+          </p>
+        </div>
+
+        <!-- 3 Feature Pills -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div
+            class="inline-flex items-center gap-1.5 bg-white border border-emerald-200/90 px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700 shadow-2xs"
+          >
+            <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+            <span>Fresh Picks Weekly</span>
+          </div>
+          <div
+            class="inline-flex items-center gap-1.5 bg-white border border-emerald-200/90 px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700 shadow-2xs"
+          >
+            <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+            <span>Free Delivery Codes</span>
+          </div>
+          <div
+            class="inline-flex items-center gap-1.5 bg-white border border-emerald-200/90 px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700 shadow-2xs"
+          >
+            <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+            <span>Members-Only Deals</span>
+          </div>
+        </div>
+
+        <!-- Subscribe Form -->
+        <form (submit)="onSubmit($event)" class="pt-1">
+          <div class="flex flex-col sm:flex-row items-center gap-2 max-w-md">
+            <div class="relative w-full">
+              <input
+                type="email"
+                [(ngModel)]="emailInput"
+                name="email"
+                placeholder="you@example.com"
+                required
+                class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-2xs"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full sm:w-auto px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-sm transition-all shadow-xs hover:shadow cursor-pointer inline-flex items-center justify-center gap-2 shrink-0"
+            >
+              <span>Subscribe</span>
+              <i class="fa-solid fa-arrow-right text-xs"></i>
+            </button>
+          </div>
+          <p class="text-[11px] text-gray-400 mt-2 font-normal">
+            * We respect your privacy. No spam ever.
+          </p>
+        </form>
+      </div>
+
+      <!-- Right Column: Mobile App Card (lg:col-span-5) -->
+      <div class="lg:col-span-5">
+        <div
+          class="bg-[#0f172a] text-white rounded-2xl p-6 sm:p-7 shadow-xl border border-slate-800 relative overflow-hidden"
+        >
+          <!-- Top Badge -->
+          <span
+            class="inline-block bg-emerald-500/20 text-emerald-400 text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full mb-3"
+          >
+            MOBILE APP
+          </span>
+
+          <h3 class="text-xl sm:text-2xl font-bold text-white mb-1.5">
+            Shop Faster on Our App
+          </h3>
+          <p class="text-slate-400 text-xs sm:text-sm mb-5 leading-relaxed">
+            Get app-exclusive deals & 15% off your first order.
+          </p>
+
+          <!-- App Store Download Buttons -->
+          <div class="space-y-2.5 mb-5">
+            <!-- App Store -->
+            <a
+              href="#"
+              class="flex items-center gap-3 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700/80 rounded-xl px-4 py-2.5 transition-all group cursor-pointer"
+            >
+              <i class="fa-brands fa-apple text-2xl text-white"></i>
+              <div class="text-left">
+                <div class="text-[9px] uppercase tracking-wider text-slate-400 font-medium">
+                  DOWNLOAD ON THE
+                </div>
+                <div class="text-xs font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                  App Store
+                </div>
+              </div>
+            </a>
+
+            <!-- Google Play -->
+            <a
+              href="#"
+              class="flex items-center gap-3 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700/80 rounded-xl px-4 py-2.5 transition-all group cursor-pointer"
+            >
+              <i class="fa-brands fa-google-play text-xl text-emerald-400"></i>
+              <div class="text-left">
+                <div class="text-[9px] uppercase tracking-wider text-slate-400 font-medium">
+                  GET IT ON
+                </div>
+                <div class="text-xs font-semibold text-white group-hover:text-emerald-400 transition-colors">
+                  Google Play
+                </div>
+              </div>
+            </a>
+          </div>
+
+          <!-- App Ratings & Downloads -->
+          <div class="flex items-center gap-2 text-xs text-slate-300">
+            <div class="flex items-center text-amber-400 text-xs gap-0.5">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <span class="font-medium text-slate-300">4.9 • 100K+ downloads</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

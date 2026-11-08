@@ -1,0 +1,35 @@
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- Section Header -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center gap-2.5">
+      <span class="w-1.5 h-6 bg-emerald-600 rounded-full inline-block"></span>
+      <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+        Shop By <span class="text-emerald-600">Category</span>
+      </h2>
+    </div>
+
+    <a routerLink="/categories"
+      class="text-xs sm:text-sm font-semibold text-emerald-600 hover:text-emerald-700 inline-flex items-center gap-1.5 group transition-colors">
+      <span>View All Categories</span>
+      <i class="fa-solid fa-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+    </a>
+  </div>
+
+  <!-- Categories Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5 sm:gap-4">
+    @for(category of categories(); track category._id) {
+    <div [routerLink]="['/products']" [queryParams]="{ category: category._id }"
+      class="group bg-white border border-gray-100 hover:border-emerald-300 rounded-2xl p-4 shadow-2xs hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col items-center justify-center text-center">
+      <div
+        class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-50/50 p-2.5 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
+        <img class="w-full h-full object-contain rounded-full" [src]="category.image" [alt]="category.name"
+          [title]="category.slug" loading="lazy" />
+      </div>
+      <h3
+        class="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-emerald-600 transition-colors line-clamp-1">
+        {{ category.name }}
+      </h3>
+    </div>
+    }
+  </div>
+</section>

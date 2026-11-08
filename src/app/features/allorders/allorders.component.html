@@ -1,0 +1,339 @@
+<section
+  class="min-h-[calc(100vh-140px)] bg-white py-6 sm:py-10 px-4 sm:px-6 lg:px-8 font-sans transition-colors duration-200">
+  <div class="max-w-7xl mx-auto">
+    <!-- Breadcrumb Navigation -->
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-6"
+      aria-label="Breadcrumb">
+      <a routerLink="/home" class="hover:text-emerald-600 transition-colors">
+        Home
+      </a>
+      <span class="text-gray-400">/</span>
+      <span class="font-medium text-gray-900">My Orders</span>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div class="flex items-center gap-4">
+        <div
+          class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+          <i class="fa-solid fa-bag-shopping text-xl sm:text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+            My Orders
+          </h1>
+          <p class="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Track and manage your {{ orders().length }} {{ orders().length === 1 ? 'order' : 'orders' }}
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <a routerLink="/shop"
+          class="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+          <i class="fa-solid fa-bag-shopping text-sm"></i>
+          <span>Continue Shopping</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Loading Skeleton State -->
+    @if (isLoading()) {
+    <div class="space-y-4">
+      @for (item of [1, 2]; track item) {
+      <div
+        class="bg-white rounded-2xl border border-gray-100 p-5 sm:p-6 shadow-2xs animate-pulse">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex items-start sm:items-center gap-4 flex-1">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 rounded-2xl shrink-0"></div>
+            <div class="space-y-2.5 flex-1 max-w-md">
+              <div class="h-5 bg-gray-200 rounded-full w-24"></div>
+              <div class="h-6 bg-gray-200 rounded-md w-36"></div>
+              <div class="h-4 bg-gray-100 rounded-md w-60"></div>
+              <div class="h-6 bg-gray-200 rounded-md w-28"></div>
+            </div>
+          </div>
+          <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3">
+            <div class="w-9 h-9 bg-gray-200 rounded-xl"></div>
+            <div class="h-9 bg-gray-200 rounded-xl w-24"></div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+
+    <!-- Error State -->
+    @else if (isError()) {
+    <div
+      class="bg-white rounded-3xl border border-red-100 shadow-2xs p-8 sm:p-12 text-center max-w-md mx-auto">
+      <div
+        class="w-16 h-16 mx-auto rounded-3xl bg-red-50 text-red-500 flex items-center justify-center mb-4">
+        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+      </div>
+      <h2 class="text-xl font-bold text-gray-900 mb-2">
+        Unable to load orders
+      </h2>
+      <p class="text-xs sm:text-sm text-gray-500 mb-6">
+        There was an issue fetching your orders. Please try again.
+      </p>
+      <button (click)="loadOrders()" type="button"
+        class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-2xs transition-all cursor-pointer">
+        <i class="fa-solid fa-rotate-right text-xs"></i>
+        <span>Retry</span>
+      </button>
+    </div>
+    }
+
+    <!-- Empty Orders State -->
+    @else if (orders().length === 0) {
+    <div
+      class="bg-white rounded-3xl border border-gray-100 shadow-2xs p-8 sm:p-12 text-center max-w-lg mx-auto">
+      <div
+        class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-5 border border-emerald-100">
+        <i class="fa-solid fa-bag-shopping text-2xl sm:text-3xl"></i>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight mb-2">
+        No orders yet
+      </h2>
+      <p class="text-xs sm:text-sm text-gray-500 mb-6 max-w-sm mx-auto">
+        You haven't placed any orders yet. Discover our latest products and start shopping today!
+      </p>
+      <a routerLink="/shop"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-sm font-semibold rounded-xl shadow-sm transition-all">
+        <i class="fa-solid fa-cart-shopping text-sm"></i>
+        <span>Start Shopping</span>
+      </a>
+    </div>
+    }
+
+    <!-- Active Orders List -->
+    @else {
+    <div class="space-y-6">
+      @for (order of orders(); track order._id || order.id) {
+      <div
+        class="bg-white rounded-2xl border border-emerald-200/90 p-5 sm:p-6 shadow-2xs hover:shadow-xs transition-all">
+        <!-- Card Header / Summary Row -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <!-- Left Side: Product preview thumbnail & basic info -->
+          <div class="flex items-start sm:items-center gap-4 sm:gap-5 flex-1 min-w-0">
+            <!-- Thumbnail with +N badge -->
+            <div
+              class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gray-50/80 border border-gray-100 p-2 flex items-center justify-center shrink-0">
+              @if (order.cartItems && order.cartItems.length > 0 && order.cartItems[0].product) {
+              <img [src]="order.cartItems[0].product.imageCover" [alt]="order.cartItems[0].product.title"
+                class="max-w-full max-h-full object-contain" />
+              } @else {
+              <i class="fa-solid fa-box text-2xl text-gray-400"></i>
+              }
+
+              @if (order.cartItems && order.cartItems.length > 1) {
+              <span
+                class="absolute -top-1.5 -right-1.5 bg-black text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-sm ring-2 ring-white">
+                +{{ order.cartItems.length - 1 }}
+              </span>
+              }
+            </div>
+
+            <!-- Order Info -->
+            <div class="min-w-0 flex-1">
+              <!-- Status Badge -->
+              <div class="mb-1.5">
+                @if (order.isDelivered) {
+                <span
+                  class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <i class="fa-solid fa-circle-check text-[10px]"></i>
+                  <span>Delivered</span>
+                </span>
+                } @else if (order.isPaid) {
+                <span
+                  class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                  <i class="fa-solid fa-circle-check text-[10px]"></i>
+                  <span>Paid</span>
+                </span>
+                } @else {
+                <span
+                  class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200/80">
+                  <i class="fa-regular fa-clock text-[11px] text-amber-500"></i>
+                  <span>Processing</span>
+                </span>
+                }
+              </div>
+
+              <!-- Order ID -->
+              <h3 class="text-base sm:text-lg font-bold text-gray-900">
+                # {{ order.id }}
+              </h3>
+
+              <!-- Meta Row (Date • Items • City) -->
+              <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mt-1">
+                <span class="inline-flex items-center gap-1.5">
+                  <i class="fa-regular fa-calendar text-gray-400"></i>
+                  <span>{{ order.createdAt | date:'mediumDate' }}</span>
+                </span>
+                <span class="text-gray-300">•</span>
+                <span class="inline-flex items-center gap-1.5">
+                  <i class="fa-solid fa-box text-gray-400"></i>
+                  <span>{{ getTotalItems(order) }} {{ getTotalItems(order) === 1 ? 'item' : 'items' }}</span>
+                </span>
+                @if (order.shippingAddress?.city) {
+                <span class="text-gray-300">•</span>
+                <span class="inline-flex items-center gap-1.5">
+                  <i class="fa-solid fa-location-dot text-gray-400"></i>
+                  <span>{{ order.shippingAddress.city }}</span>
+                </span>
+                }
+              </div>
+
+              <!-- Order Price -->
+              <div class="mt-2 flex items-baseline gap-1">
+                <span class="text-xl sm:text-2xl font-bold text-gray-900">
+                  {{ order.totalOrderPrice }}
+                </span>
+                <span class="text-xs font-semibold text-gray-500">EGP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Side: Payment Method Icon & Toggle Button -->
+          <div
+            class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-4 shrink-0 pt-2 sm:pt-0">
+            <!-- Payment Method Icon -->
+            <div
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500"
+              [title]="order.paymentMethodType === 'cash' ? 'Cash on Delivery' : 'Online Payment'">
+              @if (order.paymentMethodType === 'cash') {
+              <i class="fa-solid fa-money-bill-wave text-xs sm:text-sm"></i>
+              } @else {
+              <i class="fa-regular fa-credit-card text-xs sm:text-sm"></i>
+              }
+            </div>
+
+            <!-- Expand / Collapse Button -->
+            @if (isOrderExpanded(order.id)) {
+            <button (click)="toggleOrder(order.id)" type="button"
+              class="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs sm:text-sm font-semibold rounded-xl shadow-2xs transition-all cursor-pointer">
+              <span>Hide</span>
+              <i class="fa-solid fa-chevron-up text-[10px]"></i>
+            </button>
+            } @else {
+            <button (click)="toggleOrder(order.id)" type="button"
+              class="inline-flex items-center gap-1.5 px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs sm:text-sm font-semibold rounded-xl shadow-2xs transition-all active:scale-95 cursor-pointer">
+              <span>Details</span>
+              <i class="fa-solid fa-chevron-down text-[10px] text-gray-400"></i>
+            </button>
+            }
+          </div>
+        </div>
+
+        <!-- Expanded Order Details Section -->
+        @if (isOrderExpanded(order.id)) {
+        <div class="mt-5 pt-5 border-t border-gray-100 space-y-5">
+          <!-- Order Items Subsection -->
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <div
+                class="w-5 h-5 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
+                <i class="fa-solid fa-box-open text-[10px]"></i>
+              </div>
+              <h4 class="text-xs sm:text-sm font-bold text-gray-900">
+                Order Items
+              </h4>
+            </div>
+
+            <div class="space-y-2">
+              @for (item of order.cartItems; track item._id || item.product?.id || $index) {
+              <div
+                class="flex items-center justify-between p-3 sm:p-3.5 bg-gray-50/70 rounded-xl border border-gray-100/90 transition-colors">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-white border border-gray-100 p-1 flex items-center justify-center shrink-0">
+                    <img [src]="item.product?.imageCover" [alt]="item.product?.title"
+                      class="max-w-full max-h-full object-contain" />
+                  </div>
+                  <div class="min-w-0">
+                    <h5 class="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+                      {{ item.product?.title }}
+                    </h5>
+                    <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5">
+                      {{ item.count }} × {{ item.price }} EGP
+                    </p>
+                  </div>
+                </div>
+                <div class="text-right shrink-0 pl-3">
+                  <span class="block text-sm sm:text-base font-bold text-gray-900">
+                    {{ item.price * item.count }}
+                  </span>
+                  <span class="block text-[10px] text-gray-400 uppercase font-medium">EGP</span>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+
+          <!-- 2-Column Grid: Delivery Address & Order Summary -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Delivery Address Card -->
+            <div
+              class="bg-white border border-gray-100 rounded-2xl p-4 sm:p-5 shadow-2xs">
+              <div class="flex items-center gap-2 mb-3">
+                <i class="fa-solid fa-location-dot text-blue-500 text-sm"></i>
+                <h4 class="text-xs sm:text-sm font-bold text-gray-900">
+                  Delivery Address
+                </h4>
+              </div>
+              <div class="space-y-1 text-xs sm:text-sm">
+                <p class="font-bold text-gray-900">
+                  {{ order.shippingAddress?.city || 'Cairo' }}
+                </p>
+                <p class="text-gray-500 text-xs">
+                  {{ order.shippingAddress?.details }}
+                </p>
+                @if (order.shippingAddress?.phone) {
+                <p class="text-gray-600 text-xs flex items-center gap-1.5 pt-1">
+                  <i class="fa-solid fa-phone text-gray-400 text-[10px]"></i>
+                  <span>{{ order.shippingAddress.phone }}</span>
+                </p>
+                }
+              </div>
+            </div>
+
+            <div
+              class="bg-[#FFFBEB] border border-amber-200/60 rounded-2xl p-4 sm:p-5 shadow-2xs">
+              <div class="flex items-center gap-2 mb-3">
+                <i class="fa-regular fa-clock text-amber-500 text-sm"></i>
+                <h4 class="text-xs sm:text-sm font-bold text-gray-900">
+                  Order Summary
+                </h4>
+              </div>
+              <div class="space-y-2 text-xs sm:text-sm">
+                <div class="flex items-center justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span class="font-medium text-gray-900">
+                    {{ (order.totalOrderPrice - (order.shippingPrice || 0)) }} EGP
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-gray-600">
+                  <span>Shipping</span>
+                  <span class="font-medium text-gray-900">
+                    {{ order.shippingPrice && order.shippingPrice > 0 ? (order.shippingPrice + ' EGP') : 'Free' }}
+                  </span>
+                </div>
+                <div
+                  class="border-t border-amber-200/60 pt-2.5 mt-2 flex items-center justify-between">
+                  <span class="font-bold text-gray-900 text-sm">Total</span>
+                  <span class="font-extrabold text-gray-900 text-base sm:text-lg">
+                    {{ order.totalOrderPrice }} EGP
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+    }
+  </div>
+</section>
